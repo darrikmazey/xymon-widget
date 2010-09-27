@@ -1,0 +1,14 @@
+Source: xymon-widget
+Section: Desktop
+Priority: extra
+Maintainer: Darrik Mazey <darrik@darmasoft.com>
+Build-Depends: debhelper (>= 5)
+Standards-Version: 3.7.2
+
+Package: xymon-widget
+Section: Desktop
+Priority: extra
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: xymon desktop widget
+ A xymon desktop widget for keeping tabs on xymon.
