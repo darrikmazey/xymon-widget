@@ -50,5 +50,11 @@ QT +=
 FORMS = 
 HEADERS =
 
-HEADERS +=
-SOURCES = xymon_widget.cpp
+HEADERS += mainwindow.h \
+						settingsdialog.h \
+						application.h
+
+SOURCES = xymon_widget.cpp \
+					mainwindow.cpp \
+					settingsdialog.cpp \
+					application.cpp

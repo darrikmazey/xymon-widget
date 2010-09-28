@@ -1,13 +1,14 @@
 
 #include <QtDebug>
-#include <QApplication>
-#include <QLabel>
+#include "application.h"
+#include "mainwindow.h"
 
 int main(int argc, char **argv)
 {
-	QApplication app(argc, argv);
+	Application *app = new Application("xymon", "0.2", argc, argv);
 
-	QLabel *lbl = new QLabel(QString("hello bitches!"));
-	lbl->show();
-	return(app.exec());
+	MainWindow *mw = new MainWindow();
+	mw->show();
+
+	return(app->exec());
 }
