@@ -9,7 +9,7 @@
 message("building xymon_widget")
 
 TEMPLATE = app
-TARGET =
+TARGET = xymon_widget
 
 QT +=
 
@@ -43,6 +43,14 @@ CONFIG(debug) {
 } else {
 	message("building release target")
 }
+
+PREFIX=debian/xymon-widget
+desktop.path = $$PREFIX/usr/share/applications/hildon-home
+desktop.files = qt-homescreen-example.desktop
+
+target.path = $$PREFIX/usr/lib/hildon-desktop
+INSTALLS += target desktop
+
 
 CONFIG +=
 QT +=
