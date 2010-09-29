@@ -77,11 +77,13 @@ void XymonWidget::haveReply(QNetworkReply *reply)
 		QByteArray data = reply->readAll();
 		QString data_string(data);
 		qDebug() << QString("%1").arg(data_string);
-		QRegExp re(QString("BODY BGCOLOR=\"(.*?)\""));
-		if (re.indexIn(data_string) != -1) {
+		QRegExp re(QString(".*BODY BGCOLOR=\"(.*?)\".*"));
+		if (re.exactMatch(data_string)) {
 			QString color = re.cap(1);
 			QMaemo5InformationBox::information(this, QString("color: %1").arg(color), QMaemo5InformationBox::NoTimeout);
 			m_colorLabel->setPixmap(QPixmap(QString("/opt/xymon-widget/images/xymon_%1.png").arg(color)));
+		} else {
+			QMaemo5InformationBox::information(this, QString("no match"), QMaemo5InformationBox::NoTimeout);
 		}
 	} else {
 		QMaemo5InformationBox::information(this, QString("error: %1").arg(reply->error()), QMaemo5InformationBox::NoTimeout);
