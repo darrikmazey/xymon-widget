@@ -11,7 +11,7 @@ message("building xymon_widget")
 TEMPLATE = app
 TARGET = xymon_widget
 
-QT +=
+QT += network
 
 DEPENDPATH += . src
 INCLUDEPATH += . src ui

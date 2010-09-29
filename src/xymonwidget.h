@@ -4,6 +4,7 @@
 
 #include <QWidget>
 #include <QLabel>
+#include <QNetworkReply>
 
 class XymonWidget : public QWidget
 {
@@ -15,9 +16,11 @@ class XymonWidget : public QWidget
 	
 	public slots:
 		void showSettingsDialog();
+		void haveReply(QNetworkReply *reply);
 
 	protected:
 		void reload();
+		void reloadStatus();
 
 		QString m_serverAddress;
 		QString m_nickname;

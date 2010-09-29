@@ -7,6 +7,9 @@
 #include <QLabel>
 #include <QPalette>
 #include <QSettings>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QUrl>
 
 XymonWidget::XymonWidget(QWidget *parent) :
 	QWidget(parent)
@@ -17,13 +20,10 @@ XymonWidget::XymonWidget(QWidget *parent) :
 	setMaximumSize(144,178);
 
 	QVBoxLayout *layout = new QVBoxLayout();
-	QWidget *w = new QWidget();
-	w->setMinimumSize(144,148);
-	w->setMaximumSize(144,148);
+	QLabel *w = new QLabel();
+	w->setAlignment(Qt::AlignCenter);
+	w->setPixmap(QPixmap(QString("/opt/xymon-widget/images/xymon_blue.png")));
 	layout->addWidget(w);
-	QPalette p;
-	p.setColor(QPalette::Window, QColor(0, 0, 255));
-	w->setPalette(p);
 	m_label = new QLabel();
 	m_label->setAlignment(Qt::AlignCenter);
 	layout->addWidget(m_label);
@@ -51,5 +51,23 @@ void XymonWidget::reload()
 	m_serverAddress = settings.value("server_address", QString("")).toString();
 	m_nickname = settings.value("nickname", QString("none")).toString();
 	m_label->setText(m_nickname);
+
+	reloadStatus();
+}
+
+void XymonWidget::reloadStatus()
+{
+	QSettings settings;
+	QString server_address = settings.value("server_address").toString();
+	QNetworkAccessManager *man = new QNetworkAccessManager(this);
+	QUrl url(QString("%1/bb2.html").arg(server_address));
+	qDebug() << QString("fetching %1").arg(url.toString());
+	connect(man, SIGNAL(finished(QNetworkReply *)), this, SLOT(haveReply(QNetworkReply *)));
+	man->get(QNetworkRequest(url));
+}
+
+void XymonWidget::haveReply(QNetworkReply *reply)
+{
+	qDebug() << QString("have reply!");
 }
 
