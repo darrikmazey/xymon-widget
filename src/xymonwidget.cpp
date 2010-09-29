@@ -10,6 +10,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QUrl>
+#include <QMaemo5InformationBox>
 
 XymonWidget::XymonWidget(QWidget *parent) :
 	QWidget(parent)
@@ -61,6 +62,7 @@ void XymonWidget::reloadStatus()
 	QString server_address = settings.value("server_address").toString();
 	QNetworkAccessManager *man = new QNetworkAccessManager(this);
 	QUrl url(QString("%1/bb2.html").arg(server_address));
+	QMaemo5InformationBox::information(this, QString("fetching %1").arg(url.toString()), QMaemo5InformationBox::NoTimeout);
 	qDebug() << QString("fetching %1").arg(url.toString());
 	connect(man, SIGNAL(finished(QNetworkReply *)), this, SLOT(haveReply(QNetworkReply *)));
 	man->get(QNetworkRequest(url));
@@ -68,6 +70,15 @@ void XymonWidget::reloadStatus()
 
 void XymonWidget::haveReply(QNetworkReply *reply)
 {
+	QMaemo5InformationBox::information(this, QString("have reply!"), QMaemo5InformationBox::NoTimeout);
 	qDebug() << QString("have reply!");
+	if (reply->error() == 0) {
+		QMaemo5InformationBox::information(this, QString("no error"), QMaemo5InformationBox::NoTimeout);
+		QByteArray data = reply->readAll();
+		QString data_string(data);
+		qDebug() << QString("%1").arg(data_string);
+	} else {
+		QMaemo5InformationBox::information(this, QString("error: %1").arg(reply->error()), QMaemo5InformationBox::NoTimeout);
+	}
 }
 
