@@ -25,6 +25,7 @@ class XymonWidget : public QWidget
 		QString m_serverAddress;
 		QString m_nickname;
 		QLabel *m_label;
+		QLabel *m_colorLabel;
 };
 
 #endif // DARMA_MAEMO_XYMON_WIDGET_H

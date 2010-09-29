@@ -21,10 +21,10 @@ XymonWidget::XymonWidget(QWidget *parent) :
 	setMaximumSize(144,178);
 
 	QVBoxLayout *layout = new QVBoxLayout();
-	QLabel *w = new QLabel();
-	w->setAlignment(Qt::AlignCenter);
-	w->setPixmap(QPixmap(QString("/opt/xymon-widget/images/xymon_blue.png")));
-	layout->addWidget(w);
+	m_colorLabel = new QLabel();
+	m_colorLabel->setAlignment(Qt::AlignCenter);
+	m_colorLabel->setPixmap(QPixmap(QString("/opt/xymon-widget/images/xymon_blue.png")));
+	layout->addWidget(m_colorLabel);
 	m_label = new QLabel();
 	m_label->setAlignment(Qt::AlignCenter);
 	layout->addWidget(m_label);
@@ -77,6 +77,12 @@ void XymonWidget::haveReply(QNetworkReply *reply)
 		QByteArray data = reply->readAll();
 		QString data_string(data);
 		qDebug() << QString("%1").arg(data_string);
+		QRegExp re(QString("BODY BGCOLOR=\"(.*?)\""));
+		if (re.indexIn(data_string) != -1) {
+			QString color = re.cap(1);
+			QMaemo5InformationBox::information(this, QString("color: %1").arg(color), QMaemo5InformationBox::NoTimeout);
+			m_colorLabel->setPixmap(QPixmap(QString("/opt/xymon-widget/images/xymon_%1.png").arg(color)));
+		}
 	} else {
 		QMaemo5InformationBox::information(this, QString("error: %1").arg(reply->error()), QMaemo5InformationBox::NoTimeout);
 	}
