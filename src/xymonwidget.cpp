@@ -77,7 +77,7 @@ void XymonWidget::haveReply(QNetworkReply *reply)
 		QByteArray data = reply->readAll();
 		QString data_string(data);
 		qDebug() << QString("%1").arg(data_string);
-		QRegExp re(QString(".*BODY BGCOLOR=\"(.*?)\".*"));
+		QRegExp re(QString(".*BODY BGCOLOR=\"(\\w+)\".*"));
 		if (re.exactMatch(data_string)) {
 			QString color = re.cap(1);
 			QMaemo5InformationBox::information(this, QString("color: %1").arg(color), QMaemo5InformationBox::NoTimeout);
