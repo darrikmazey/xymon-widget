@@ -85,6 +85,8 @@ void SettingsDialog::save()
 	QSettings settings;
 	settings.setValue("nickname", m_leNickname->text());
 	settings.setValue("server_address", m_leServerAddress->text());
+	settings.setValue("username", m_leUsername->text());
+	settings.setValue("password", m_lePassword->text());
 	settings.setValue("first_time_configured", true);
 	settings.sync();
 	emit accept();
