@@ -2,8 +2,8 @@
 Name=Xymon Widget
 Comment=A widget for keeping tabs on xymon
 Type=qt
-X-Path=xymon_widget
+X-Path=/usr/lib/hildon-desktop/xymon_widget
 X-Multiple-Instances=false
-X-home-applet-minwidth=100
-X-home-applet-minheight=72
+X-home-applet-minwidth=144
+X-home-applet-minheight=178
 Name[en_US]=Xymon Widget

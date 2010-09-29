@@ -2,15 +2,18 @@
 #include "qmaemo5homescreenadaptor.h"
 
 #include <QApplication>
-#include <QLabel>
+#include "xymonwidget.h"
 
 int main(int argc, char **argv)
 {
 	QApplication app(argc, argv);
 
-	QLabel *lbl = new QLabel("test widget");
-	QMaemo5HomescreenAdaptor *adaptor = new QMaemo5HomescreenAdaptor(lbl);
+	XymonWidget *w = new XymonWidget();
+	QMaemo5HomescreenAdaptor *adaptor = new QMaemo5HomescreenAdaptor(w);
 
-	lbl->show();
+	adaptor->setSettingsAvailable(true);
+	QObject::connect(adaptor, SIGNAL(settingsRequested()), w, SLOT(showSettingsDialog()));
+
+	w->show();
 	app.exec();
 }

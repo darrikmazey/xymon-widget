@@ -58,7 +58,9 @@ QT +=
 FORMS = 
 HEADERS =
 
-HEADERS += qmaemo5homescreenadaptor.h
+HEADERS += qmaemo5homescreenadaptor.h \
+						xymonwidget.h
 
 SOURCES = qmaemo5homescreenadaptor.cpp \
-					xymon_widget.cpp
+					xymon_widget.cpp \
+					xymonwidget.cpp
