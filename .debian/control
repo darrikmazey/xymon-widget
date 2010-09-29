@@ -10,5 +10,5 @@ Section: user/desktop
 Priority: extra
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libqt4-core (>= 4.6.1), libqt4-gui (>= 4.6.1), qt4-homescreen-loader
-: xymon desktop widget
+Description: xymon desktop widget
  A xymon desktop widget for keeping tabs on xymon.
