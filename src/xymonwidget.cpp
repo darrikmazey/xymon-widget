@@ -13,6 +13,8 @@ XymonWidget::XymonWidget(QWidget *parent) :
 {
 	qDebug() << QString("XymonWidget::XymonWidget()");
 	resize(144,178);
+	setMinimumSize(144,178);
+	setMaximumSize(144,178);
 
 	QVBoxLayout *layout = new QVBoxLayout();
 	QWidget *w = new QWidget();

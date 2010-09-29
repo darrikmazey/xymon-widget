@@ -48,8 +48,11 @@ PREFIX=debian/xymon-widget
 desktop.path = $$PREFIX/usr/share/applications/hildon-home
 desktop.files = xymon_widget.desktop
 
+images.path = $$PREFIX/opt/xymon-widget/images
+images.files = xymon_red.png xymon_blue.png xymon_green.png xymon_yellow.png
+
 target.path = $$PREFIX/usr/lib/hildon-desktop
-INSTALLS += target desktop
+INSTALLS += target desktop images
 
 
 CONFIG +=
