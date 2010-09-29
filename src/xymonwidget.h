@@ -17,7 +17,10 @@ class XymonWidget : public QWidget
 		void showSettingsDialog();
 
 	protected:
+		void reload();
+
 		QString m_serverAddress;
+		QString m_nickname;
 		QLabel *m_label;
 };
 
