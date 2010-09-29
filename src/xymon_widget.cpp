@@ -8,6 +8,7 @@
 #include <QFile>
 #include <QString>
 #include <QRegExp>
+#include <QSettings>
 
 int main(int argc, char **argv)
 {
@@ -43,5 +44,11 @@ int main(int argc, char **argv)
 	QObject::connect(adaptor, SIGNAL(settingsRequested()), w, SLOT(showSettingsDialog()));
 
 	w->show();
+	
+	QSettings settings;
+	if (!settings.value("first_time_configured").toBool()) {
+		w->showSettingsDialog();
+	}
+
 	app.exec();
 }

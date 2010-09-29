@@ -24,11 +24,15 @@ XymonWidget::XymonWidget(QWidget *parent) :
 	m_colorLabel = new QLabel();
 	m_colorLabel->setAlignment(Qt::AlignCenter);
 	m_colorLabel->setPixmap(QPixmap(QString("/opt/xymon-widget/images/xymon_blue.png")));
+	m_colorLabel->setContentsMargins(0,8,0,0);
 	layout->addWidget(m_colorLabel);
 	m_label = new QLabel();
 	m_label->setAlignment(Qt::AlignCenter);
 	layout->addWidget(m_label);
 	setLayout(layout);
+	m_timer = new QTimer();
+	connect(m_timer, SIGNAL(timeout()), this, SLOT(reloadStatus()));
+	m_timer->start(120000);
 	reload();
 }
 
@@ -52,8 +56,9 @@ void XymonWidget::reload()
 	m_serverAddress = settings.value("server_address", QString("")).toString();
 	m_nickname = settings.value("nickname", QString("none")).toString();
 	m_label->setText(m_nickname);
-
-	reloadStatus();
+	if (settings.value("first_time_configured").toBool()) {
+		reloadStatus();
+	}
 }
 
 void XymonWidget::reloadStatus()
@@ -62,31 +67,36 @@ void XymonWidget::reloadStatus()
 	QString server_address = settings.value("server_address").toString();
 	QNetworkAccessManager *man = new QNetworkAccessManager(this);
 	QUrl url(QString("%1/bb2.html").arg(server_address));
-	QMaemo5InformationBox::information(this, QString("fetching %1").arg(url.toString()), QMaemo5InformationBox::NoTimeout);
+	QMaemo5InformationBox::information(this, QString("fetching %1").arg(url.toString()), QMaemo5InformationBox::DefaultTimeout);
 	qDebug() << QString("fetching %1").arg(url.toString());
 	connect(man, SIGNAL(finished(QNetworkReply *)), this, SLOT(haveReply(QNetworkReply *)));
-	man->get(QNetworkRequest(url));
+	QNetworkRequest req(url);
+	QString username = settings.value("username", QString("")).toString();
+	QString password = settings.value("password", QString("")).toString();
+	if (username.length() > 0) {
+		QByteArray text;
+		text.append(QString("%1:%2").arg(username).arg(password));
+		QByteArray b64auth = text.toBase64();
+		req.setRawHeader(QByteArray("Authorization"), QByteArray().append(QString("Basic %1").arg(QString(b64auth))));
+	}
+	man->get(req);
 }
 
 void XymonWidget::haveReply(QNetworkReply *reply)
 {
-	QMaemo5InformationBox::information(this, QString("have reply!"), QMaemo5InformationBox::NoTimeout);
 	qDebug() << QString("have reply!");
 	if (reply->error() == 0) {
-		QMaemo5InformationBox::information(this, QString("no error"), QMaemo5InformationBox::NoTimeout);
 		QByteArray data = reply->readAll();
 		QString data_string(data);
-		qDebug() << QString("%1").arg(data_string);
 		QRegExp re(QString(".*BODY BGCOLOR=\"(\\w+)\".*"));
 		if (re.exactMatch(data_string)) {
 			QString color = re.cap(1);
-			QMaemo5InformationBox::information(this, QString("color: %1").arg(color), QMaemo5InformationBox::NoTimeout);
 			m_colorLabel->setPixmap(QPixmap(QString("/opt/xymon-widget/images/xymon_%1.png").arg(color)));
 		} else {
-			QMaemo5InformationBox::information(this, QString("no match"), QMaemo5InformationBox::NoTimeout);
+			// no match
 		}
 	} else {
-		QMaemo5InformationBox::information(this, QString("error: %1").arg(reply->error()), QMaemo5InformationBox::NoTimeout);
+		// error
 	}
 }
 

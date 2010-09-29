@@ -47,6 +47,26 @@ void SettingsDialog::createControls()
 	line2->addWidget(m_leServerAddress);
 	col1->addLayout(line2);
 
+	QHBoxLayout *line3 = new QHBoxLayout();
+	QLabel *lblUsername = new QLabel("Username:");
+	m_leUsername = new QLineEdit();
+
+	m_leUsername->setText(settings.value("username", QString("")).toString());
+
+	line3->addWidget(lblUsername);
+	line3->addWidget(m_leUsername);
+	col1->addLayout(line3);
+
+	QHBoxLayout *line4 = new QHBoxLayout();
+	QLabel *lblPassword = new QLabel("Password:");
+	m_lePassword = new QLineEdit();
+
+	m_lePassword->setText(settings.value("password", QString("")).toString());
+
+	line4->addWidget(lblPassword);
+	line4->addWidget(m_lePassword);
+	col1->addLayout(line4);
+
 	QVBoxLayout *col2 = new QVBoxLayout();
 	QPushButton *btnSave = new QPushButton("Save");
 	connect(btnSave, SIGNAL(clicked()), this, SLOT(save()));
@@ -65,6 +85,7 @@ void SettingsDialog::save()
 	QSettings settings;
 	settings.setValue("nickname", m_leNickname->text());
 	settings.setValue("server_address", m_leServerAddress->text());
+	settings.setValue("first_time_configured", true);
 	settings.sync();
 	emit accept();
 }

@@ -22,6 +22,8 @@ class SettingsDialog : public QDialog
 	
 		QLineEdit *m_leNickname;
 		QLineEdit *m_leServerAddress;
+		QLineEdit *m_leUsername;
+		QLineEdit *m_lePassword;
 };
 
 #endif // DARMA_MAEMO_SETTINGS_DIALOG_H

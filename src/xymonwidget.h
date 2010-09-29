@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QNetworkReply>
+#include <QTimer>
 
 class XymonWidget : public QWidget
 {
@@ -17,15 +18,16 @@ class XymonWidget : public QWidget
 	public slots:
 		void showSettingsDialog();
 		void haveReply(QNetworkReply *reply);
+		void reloadStatus();
 
 	protected:
 		void reload();
-		void reloadStatus();
 
 		QString m_serverAddress;
 		QString m_nickname;
 		QLabel *m_label;
 		QLabel *m_colorLabel;
+		QTimer *m_timer;
 };
 
 #endif // DARMA_MAEMO_XYMON_WIDGET_H
