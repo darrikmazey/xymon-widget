@@ -2,11 +2,10 @@
 #include <QtDebug>
 
 #include "xymonwidget.h"
+#include "settingsdialog.h"
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPalette>
-#include <QInputDialog>
-#include <QLineEdit>
 
 XymonWidget::XymonWidget(QWidget *parent) :
 	QWidget(parent)
@@ -17,6 +16,7 @@ XymonWidget::XymonWidget(QWidget *parent) :
 	QVBoxLayout *layout = new QVBoxLayout();
 	QWidget *w = new QWidget();
 	w->setMinimumSize(144,148);
+	w->setMaximumSize(144,148);
 	layout->addWidget(w);
 	QPalette p;
 	p.setColor(QPalette::Window, QColor(0, 0, 255));
@@ -38,10 +38,5 @@ XymonWidget::~XymonWidget()
 void XymonWidget::showSettingsDialog()
 {
 	qDebug() << QString("XymonWidget::showSettingsDialog()");
-	bool isOk;
-	QString newText = QInputDialog::getText(this, tr("Server Address"), tr("Server address:"), QLineEdit::Normal, m_label->text(), &isOk);
-	if (isOk) {
-		m_label->setText(newText);
-		m_serverAddress = newText;
-	}
+	int ret = SettingsDialog().exec();
 }
