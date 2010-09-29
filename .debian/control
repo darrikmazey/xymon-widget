@@ -9,6 +9,6 @@ Package: xymon-widget
 Section: user/desktop
 Priority: extra
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: xymon desktop widget
+Depends: ${shlibs:Depends}, ${misc:Depends}, libqt4-core (>= 4.6.1), libqt4-gui (>= 4.6.1), qt4-homescreen-loader
+: xymon desktop widget
  A xymon desktop widget for keeping tabs on xymon.

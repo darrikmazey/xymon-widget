@@ -1,14 +1,16 @@
 
-#include <QtDebug>
-#include "application.h"
-#include "mainwindow.h"
+#include "qmaemo5homescreenadaptor.h"
+
+#include <QApplication>
+#include <QLabel>
 
 int main(int argc, char **argv)
 {
-	Application *app = new Application("xymon", "0.2", argc, argv);
+	QApplication app(argc, argv);
 
-	MainWindow *mw = new MainWindow();
-	mw->show();
+	QLabel *lbl = new QLabel("test widget");
+	QMaemo5HomescreenAdaptor *adaptor = new QMaemo5HomescreenAdaptor(lbl);
 
-	return(app->exec());
+	lbl->show();
+	app.exec();
 }

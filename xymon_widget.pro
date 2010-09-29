@@ -46,7 +46,7 @@ CONFIG(debug) {
 
 PREFIX=debian/xymon-widget
 desktop.path = $$PREFIX/usr/share/applications/hildon-home
-desktop.files = qt-homescreen-example.desktop
+desktop.files = xymon_widget.desktop
 
 target.path = $$PREFIX/usr/lib/hildon-desktop
 INSTALLS += target desktop
@@ -58,11 +58,7 @@ QT +=
 FORMS = 
 HEADERS =
 
-HEADERS += mainwindow.h \
-						settingsdialog.h \
-						application.h
+HEADERS += qmaemo5homescreenadaptor.h
 
-SOURCES = xymon_widget.cpp \
-					mainwindow.cpp \
-					settingsdialog.cpp \
-					application.cpp
+SOURCES = qmaemo5homescreenadaptor.cpp \
+					xymon_widget.cpp
