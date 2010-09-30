@@ -65,10 +65,14 @@ void XymonWidget::reloadStatus()
 {
 	QSettings settings;
 	QString server_address = settings.value("server_address").toString();
+	QRegExp re("https?://.*");
+	if (!re.exactMatch(server_address)) {
+		server_address = QString("http://%1").arg(server_address);
+	}
 	QNetworkAccessManager *man = new QNetworkAccessManager(this);
-	QUrl url(QString("%1/bb2.html").arg(server_address));
-	QMaemo5InformationBox::information(this, QString("fetching %1").arg(url.toString()), QMaemo5InformationBox::DefaultTimeout);
-	qDebug() << QString("fetching %1").arg(url.toString());
+	QString urlstring = QString("%1/bb2.html").arg(server_address);
+	QUrl url(urlstring);
+	qDebug() << QString("fetching %1").arg(urlstring);
 	connect(man, SIGNAL(finished(QNetworkReply *)), this, SLOT(haveReply(QNetworkReply *)));
 	QNetworkRequest req(url);
 	QString username = settings.value("username", QString("")).toString();
