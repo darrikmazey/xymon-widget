@@ -32,8 +32,11 @@ XymonWidget::XymonWidget(QWidget *parent) :
 	setLayout(layout);
 	m_timer = new QTimer();
 	connect(m_timer, SIGNAL(timeout()), this, SLOT(reloadStatus()));
-	//m_timer->start(120000);
-	m_timer->start(60000);
+	QSettings settings;
+	QString txt = settings.value("poll_interval", QString("2 min")).toString();
+	int secs = pollIntervalTextToSeconds(txt);
+	qDebug() << QString("setting timer for %1 milliseconds").arg(secs * 1000);
+	m_timer->start(secs * 1000);
 	reload();
 }
 
@@ -45,10 +48,16 @@ XymonWidget::~XymonWidget()
 void XymonWidget::showSettingsDialog()
 {
 	qDebug() << QString("XymonWidget::showSettingsDialog()");
+	m_timer->stop();
 	int ret = SettingsDialog().exec();
 	if (ret == 1) {
 		reload();
 	}
+	QSettings settings;
+	QString txt = settings.value("poll_interval", QString("2 min")).toString();
+	int secs = pollIntervalTextToSeconds(txt);
+	qDebug() << QString("setting timer for %1 milliseconds").arg(secs * 1000);
+	m_timer->start(secs * 1000);
 }
 
 void XymonWidget::reload()
@@ -125,5 +134,22 @@ void XymonWidget::needsReconfigured()
 	QSettings settings;
 	settings.setValue("needs_reconfigured", true);
 	settings.sync();
+}
+
+int XymonWidget::pollIntervalTextToSeconds(const QString &txt)
+{
+	if (txt == "1 hr") {
+		return(60 * 60);
+	} else if (txt == "30 min") {
+		return(30 * 60);
+	} else if (txt == "15 min") {
+		return(15 * 60);
+	} else if (txt == "10 min") {
+		return(10 * 60);
+	} else if (txt == "5 min") {
+		return(5 * 60);
+	} else {
+		return(2 * 60);
+	}
 }
 

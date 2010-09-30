@@ -8,6 +8,11 @@
 #include <QPushButton>
 #include <QSettings>
 #include <QVBoxLayout>
+#include <QScrollArea>
+#include <QMaemo5ValueButton>
+#include <QMaemo5ListPickSelector>
+#include <QStringList>
+#include <QStringListModel>
 
 SettingsDialog::SettingsDialog(QWidget *parent, Qt::WindowFlags f) :
 	QDialog(parent, f)
@@ -23,6 +28,8 @@ SettingsDialog::~SettingsDialog()
 void SettingsDialog::createControls()
 {
 	QSettings settings;
+
+	QScrollArea *scroll = new QScrollArea(this);
 
 	QHBoxLayout *layout = new QHBoxLayout();
 	QVBoxLayout *col1 = new QVBoxLayout();
@@ -55,7 +62,6 @@ void SettingsDialog::createControls()
 
 	line3->addWidget(lblUsername);
 	line3->addWidget(m_leUsername);
-	col1->addLayout(line3);
 
 	QHBoxLayout *line4 = new QHBoxLayout();
 	QLabel *lblPassword = new QLabel("Password:");
@@ -65,6 +71,19 @@ void SettingsDialog::createControls()
 
 	line4->addWidget(lblPassword);
 	line4->addWidget(m_lePassword);
+
+	QHBoxLayout *line5 = new QHBoxLayout();
+	m_btnPoll = new QMaemo5ValueButton("Poll Interval");
+	QStringList poll_values;
+	poll_values << "2 min" << "5 min" << "10 min" << "15 min" << "30 min" << "1 hr";
+	QStringListModel *lm = new QStringListModel(poll_values);
+	QMaemo5ListPickSelector *lps = new QMaemo5ListPickSelector();
+	lps->setModel(lm);
+	m_btnPoll->setPickSelector(lps);
+	m_btnPoll->setValueText("2 min");
+	line5->addWidget(m_btnPoll);
+	col1->addLayout(line5);
+	col1->addLayout(line3);
 	col1->addLayout(line4);
 
 	QVBoxLayout *col2 = new QVBoxLayout();
@@ -76,7 +95,14 @@ void SettingsDialog::createControls()
 	layout->addLayout(col1);
 	layout->addLayout(col2);
 
-	setLayout(layout);
+	QWidget *w = new QWidget(this);
+	w->setLayout(layout);
+	w->setMinimumSize(size().width(), size().height() - 100);
+	scroll->setWidget(w);
+
+	QVBoxLayout *l = new QVBoxLayout();
+	l->addWidget(scroll);
+	setLayout(l);
 }
 
 void SettingsDialog::save()
@@ -89,6 +115,7 @@ void SettingsDialog::save()
 	settings.setValue("password", m_lePassword->text());
 	settings.setValue("first_time_configured", true);
 	settings.setValue("needs_reconfigured", false);
+	settings.setValue("poll_interval", m_btnPoll->valueText());
 	settings.sync();
 	emit accept();
 }

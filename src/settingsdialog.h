@@ -5,6 +5,7 @@
 #include <QDialog>
 
 #include <QLineEdit>
+#include <QMaemo5ValueButton>
 
 class SettingsDialog : public QDialog
 {
@@ -24,6 +25,7 @@ class SettingsDialog : public QDialog
 		QLineEdit *m_leServerAddress;
 		QLineEdit *m_leUsername;
 		QLineEdit *m_lePassword;
+		QMaemo5ValueButton *m_btnPoll;
 };
 
 #endif // DARMA_MAEMO_SETTINGS_DIALOG_H

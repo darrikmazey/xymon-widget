@@ -23,6 +23,7 @@ class XymonWidget : public QWidget
 	protected:
 		void reload();
 		void needsReconfigured();
+		int pollIntervalTextToSeconds(const QString &txt);
 
 		QString m_serverAddress;
 		QString m_nickname;
