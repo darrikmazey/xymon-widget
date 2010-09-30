@@ -11,6 +11,7 @@
 #include <QNetworkRequest>
 #include <QUrl>
 #include <QMaemo5InformationBox>
+#include <QFile>
 
 XymonWidget::XymonWidget(QWidget *parent) :
 	QWidget(parent)
@@ -105,28 +106,59 @@ void XymonWidget::reloadStatus()
 void XymonWidget::haveReply(QNetworkReply *reply)
 {
 	qDebug() << QString("have reply!");
+	#ifndef DEBUG
 	if (reply->error() == 0) {
+	#endif
 		int status = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+		#ifndef DEBUG
 		if (status != 200) {
 			QMaemo5InformationBox::information(this, QString("Received status: %1").arg(status), QMaemo5InformationBox::DefaultTimeout);
 			m_colorLabel->setPixmap(QPixmap(QString("/opt/xymon-widget/images/xymon_black.png")));
 		} else {
 			QByteArray data = reply->readAll();
 			QString data_string(data);
+		#else
+			qDebug() << QString("testing file bb2.html locally");
+			QFile f("bb2.html");
+			f.open(QIODevice::ReadWrite | QIODevice::Text);
+			QString data_string(f.readAll());
+		#endif
 			QRegExp re(QString(".*BODY BGCOLOR=\"(\\w+)\".*"));
 			if (re.exactMatch(data_string)) {
 				QString color = re.cap(1);
 				m_colorLabel->setPixmap(QPixmap(QString("/opt/xymon-widget/images/xymon_%1.png").arg(color)));
 				m_currentColor = color;
 				if (m_currentColor != "green") {
-					QRegExp re(QString(".*alt=\"(\\w+):(\\w+):(\\w+)\".*"));
-					if (re.exactMatch(data_string)) {
-						QMaemo5InformationBox::information(this, QString("Error: %1 : %2 : %3").arg(re.cap(1)).arg(re.cap(2)).arg(re.cap(3)), QMaemo5InformationBox::NoTimeout);
+					qDebug() << QString("color wasn't green");
+					QRegExp re(QString("ALT=\"((\\w+):(\\w+):(\\w+))\""));
+					int pos = 0;
+					QStringList list;
+					while ((pos = re.indexIn(data_string, pos)) != -1) {
+						qDebug() << QString("match");
+						list << re.cap(1);
+						pos += re.matchedLength();
+					}
+					qDebug() << list;
+					QString message = "";
+					for (int i = 0; i < list.size(); i++) {
+						QString match = list[i];
+						QRegExp re2("(\\w*):(\\w*):(\\w*)");
+						if (re2.exactMatch(match)) {
+							qDebug() << "matched three components";
+							QString svc = re2.cap(1);
+							QString color = re2.cap(2);
+							QString mdata = re2.cap(3);
+							message = QString("%1<br />%2 : <b>%3</b> : %4").arg(message).arg(svc).arg(color).arg(mdata);
+						}
+					}
+					if (message.length() > 0) {
+						QMaemo5InformationBox::information(this, message, QMaemo5InformationBox::NoTimeout);
 					}
 				}
 			} else {
 				// no match
 			}
+		#ifndef DEBUG
 		}
 	} else {
 		int error_code = reply->error();
@@ -135,6 +167,7 @@ void XymonWidget::haveReply(QNetworkReply *reply)
 		needsReconfigured();
 		// error
 	}
+	#endif
 }
 
 void XymonWidget::needsReconfigured()
@@ -161,3 +194,7 @@ int XymonWidget::pollIntervalTextToSeconds(const QString &txt)
 	}
 }
 
+void XymonWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+	qDebug() << QString("mouse event, bitch!");
+}

@@ -24,7 +24,9 @@ RELEASEENV = $$(RELEASE)
 isEmpty(RELEASEENV) {
 	CONFIG += debug
 	CONFIG -= release
+	DEFINES += DEBUG
 } else {
+	DEFINES += NO_DEBUG
 	CONFIG += release
 	CONFIG -= debug
 }

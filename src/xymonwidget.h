@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QNetworkReply>
 #include <QTimer>
+#include <QMouseEvent>
 
 class XymonWidget : public QWidget
 {
@@ -24,6 +25,7 @@ class XymonWidget : public QWidget
 		void reload();
 		void needsReconfigured();
 		int pollIntervalTextToSeconds(const QString &txt);
+		void mouseReleaseEvent(QMouseEvent *event);
 
 		QString m_serverAddress;
 		QString m_nickname;
