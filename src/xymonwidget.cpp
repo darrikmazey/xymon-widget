@@ -21,6 +21,7 @@ XymonWidget::XymonWidget(QWidget *parent) :
 	setMinimumSize(144,178);
 	setMaximumSize(144,178);
 
+	m_lastMessage = "";
 	QVBoxLayout *layout = new QVBoxLayout();
 	m_colorLabel = new QLabel();
 	m_colorLabel->setAlignment(Qt::AlignCenter);
@@ -151,9 +152,8 @@ void XymonWidget::haveReply(QNetworkReply *reply)
 							message = QString("%1<br />%2 : <b>%3</b> : %4").arg(message).arg(svc).arg(color).arg(mdata);
 						}
 					}
-					if (message.length() > 0) {
-						QMaemo5InformationBox::information(this, message, QMaemo5InformationBox::NoTimeout);
-					}
+					message = QString("%1<br />").arg(message);
+					m_lastMessage = message;
 				}
 			} else {
 				// no match
@@ -196,5 +196,7 @@ int XymonWidget::pollIntervalTextToSeconds(const QString &txt)
 
 void XymonWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-	qDebug() << QString("mouse event, bitch!");
+	if (m_currentColor != "green") {
+		QMaemo5InformationBox::information(this, m_lastMessage, QMaemo5InformationBox::DefaultTimeout);
+	}
 }

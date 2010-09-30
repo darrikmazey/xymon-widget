@@ -33,6 +33,7 @@ class XymonWidget : public QWidget
 		QLabel *m_colorLabel;
 		QTimer *m_timer;
 		QString m_currentColor;
+		QString m_lastMessage;
 };
 
 #endif // DARMA_MAEMO_XYMON_WIDGET_H
