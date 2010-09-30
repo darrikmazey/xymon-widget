@@ -22,6 +22,7 @@ class XymonWidget : public QWidget
 
 	protected:
 		void reload();
+		void needsReconfigured();
 
 		QString m_serverAddress;
 		QString m_nickname;

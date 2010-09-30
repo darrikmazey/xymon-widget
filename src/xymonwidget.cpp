@@ -32,7 +32,8 @@ XymonWidget::XymonWidget(QWidget *parent) :
 	setLayout(layout);
 	m_timer = new QTimer();
 	connect(m_timer, SIGNAL(timeout()), this, SLOT(reloadStatus()));
-	m_timer->start(120000);
+	//m_timer->start(120000);
+	m_timer->start(60000);
 	reload();
 }
 
@@ -64,6 +65,11 @@ void XymonWidget::reload()
 void XymonWidget::reloadStatus()
 {
 	QSettings settings;
+	if (settings.value("needs_reconfigured").toBool()) {
+		qDebug() << QString("can not fetch until reconfigured");
+		m_colorLabel->setPixmap(QPixmap(QString("/opt/xymon-widget/images/xymon_black.png")));
+		return;
+	}
 	QString server_address = settings.value("server_address").toString();
 	QRegExp re("https?://.*");
 	if (!re.exactMatch(server_address)) {
@@ -90,17 +96,34 @@ void XymonWidget::haveReply(QNetworkReply *reply)
 {
 	qDebug() << QString("have reply!");
 	if (reply->error() == 0) {
-		QByteArray data = reply->readAll();
-		QString data_string(data);
-		QRegExp re(QString(".*BODY BGCOLOR=\"(\\w+)\".*"));
-		if (re.exactMatch(data_string)) {
-			QString color = re.cap(1);
-			m_colorLabel->setPixmap(QPixmap(QString("/opt/xymon-widget/images/xymon_%1.png").arg(color)));
+		int status = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+		if (status != 200) {
+			QMaemo5InformationBox::information(this, QString("Received status: %1").arg(status), QMaemo5InformationBox::DefaultTimeout);
+			m_colorLabel->setPixmap(QPixmap(QString("/opt/xymon-widget/images/xymon_black.png")));
 		} else {
-			// no match
+			QByteArray data = reply->readAll();
+			QString data_string(data);
+			QRegExp re(QString(".*BODY BGCOLOR=\"(\\w+)\".*"));
+			if (re.exactMatch(data_string)) {
+				QString color = re.cap(1);
+				m_colorLabel->setPixmap(QPixmap(QString("/opt/xymon-widget/images/xymon_%1.png").arg(color)));
+			} else {
+				// no match
+			}
 		}
 	} else {
+		int error_code = reply->error();
+		QMaemo5InformationBox::information(this, reply->errorString(), QMaemo5InformationBox::DefaultTimeout);
+		m_colorLabel->setPixmap(QPixmap(QString("/opt/xymon-widget/images/xymon_black.png")));
+		needsReconfigured();
 		// error
 	}
+}
+
+void XymonWidget::needsReconfigured()
+{
+	QSettings settings;
+	settings.setValue("needs_reconfigured", true);
+	settings.sync();
 }
 

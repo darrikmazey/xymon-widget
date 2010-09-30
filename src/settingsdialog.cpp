@@ -88,6 +88,7 @@ void SettingsDialog::save()
 	settings.setValue("username", m_leUsername->text());
 	settings.setValue("password", m_lePassword->text());
 	settings.setValue("first_time_configured", true);
+	settings.setValue("needs_reconfigured", false);
 	settings.sync();
 	emit accept();
 }

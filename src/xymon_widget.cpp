@@ -17,26 +17,6 @@ int main(int argc, char **argv)
 	app.setOrganizationName("DarmaSoft, LLC.");
 	app.setOrganizationDomain("darmasoft.com");
 
-	/*
-	QFile f("bb2.html");
-	if (!f.open(QIODevice::ReadOnly | QIODevice::Text)) {
-		exit(0);
-	}
-
-	QString data = f.readAll();
-
-	QRegExp re(".*BODY BGCOLOR=\"(\\w+)\".*");
-	if (re.exactMatch(data)) {
-		qDebug() << QString("match!");
-		qDebug() << re.captureCount();
-		qDebug() << re.capturedTexts();
-	} else {
-		qDebug() << QString("no match!");
-	}
-	
-	exit(0);
-	*/
-
 	XymonWidget *w = new XymonWidget();
 	QMaemo5HomescreenAdaptor *adaptor = new QMaemo5HomescreenAdaptor(w);
 
@@ -46,9 +26,11 @@ int main(int argc, char **argv)
 	w->show();
 	
 	QSettings settings;
-	if (!settings.value("first_time_configured").toBool()) {
+	if (!settings.value("first_time_configured").toBool() || settings.value("needs_reconfigured").toBool()) {
 		w->showSettingsDialog();
 	}
 
-	app.exec();
+	int ret = app.exec();
+	delete(adaptor);
+	delete(w);
 }
