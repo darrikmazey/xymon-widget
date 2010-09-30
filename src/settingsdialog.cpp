@@ -80,7 +80,7 @@ void SettingsDialog::createControls()
 	QMaemo5ListPickSelector *lps = new QMaemo5ListPickSelector();
 	lps->setModel(lm);
 	m_btnPoll->setPickSelector(lps);
-	m_btnPoll->setValueText("2 min");
+	m_btnPoll->setValueText(settings.value("poll_interval", QString("2 min")).toString());
 	line5->addWidget(m_btnPoll);
 	col1->addLayout(line5);
 	col1->addLayout(line3);
