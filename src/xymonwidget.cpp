@@ -24,6 +24,7 @@ XymonWidget::XymonWidget(QWidget *parent) :
 	m_colorLabel = new QLabel();
 	m_colorLabel->setAlignment(Qt::AlignCenter);
 	m_colorLabel->setPixmap(QPixmap(QString("/opt/xymon-widget/images/xymon_blue.png")));
+	m_currentColor = "blue";
 	m_colorLabel->setContentsMargins(0,8,0,0);
 	layout->addWidget(m_colorLabel);
 	m_label = new QLabel();
@@ -116,6 +117,13 @@ void XymonWidget::haveReply(QNetworkReply *reply)
 			if (re.exactMatch(data_string)) {
 				QString color = re.cap(1);
 				m_colorLabel->setPixmap(QPixmap(QString("/opt/xymon-widget/images/xymon_%1.png").arg(color)));
+				m_currentColor = color;
+				if (m_currentColor != "green") {
+					QRegExp re(QString(".*alt=\"(\\w+):(\\w+):(\\w+)\".*"));
+					if (re.exactMatch(data_string)) {
+						QMaemo5InformationBox::information(this, QString("Error: %1 : %2 : %3").arg(re.cap(1)).arg(re.cap(2)).arg(re.cap(3)), QMaemo5InformationBox::NoTimeout);
+					}
+				}
 			} else {
 				// no match
 			}
