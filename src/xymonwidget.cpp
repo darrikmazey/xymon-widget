@@ -138,25 +138,29 @@ void XymonWidget::haveReply(QNetworkReply *reply)
 				m_currentColor = color;
 				if (m_currentColor != "green") {
 					qDebug() << QString("color wasn't green");
-					QRegExp re(QString("ALT=\"((\\w+):(\\w+):(\\w+))\""));
+					QRegExp re(QString("<A[^>]*HOST=([a-zA-Z.]+)[^>]*><IMG[^>]*ALT=\"([a-zA-Z0-9_:]+)\""));
 					int pos = 0;
 					QStringList list;
 					while ((pos = re.indexIn(data_string, pos)) != -1) {
-						qDebug() << QString("match");
-						list << re.cap(1);
+						qDebug() << QString("match: %1").arg(re.cap(0));
+						QString matched_string = QString("%1#%2").arg(re.cap(1)).arg(re.cap(2));
+						qDebug() << matched_string;
+						list << matched_string;
 						pos += re.matchedLength();
 					}
 					qDebug() << list;
 					QString message = "";
 					for (int i = 0; i < list.size(); i++) {
 						QString match = list[i];
-						QRegExp re2("(\\w*):(\\w*):(\\w*)");
-						if (re2.exactMatch(match)) {
-							qDebug() << "matched three components";
-							QString svc = re2.cap(1);
-							QString color = re2.cap(2);
-							QString mdata = re2.cap(3);
-							message = QString("%1<br />%2 : <b>%3</b> : %4").arg(message).arg(svc).arg(color).arg(mdata);
+						QStringList matchparts = match.split("#");
+						QString host = matchparts[0];
+						QString data = matchparts[1];
+						QStringList dataparts = data.split(":", QString::KeepEmptyParts);
+						QString svc = dataparts[0];
+						QString color = dataparts[1];
+						QString mdata = dataparts[2];
+						if (color != "green") {
+							message = QString("%1<br />%2 : %3 : %4 : %5").arg(message).arg(host).arg(svc).arg(color).arg(mdata);
 						}
 					}
 					message = QString("%1<br />").arg(message);
