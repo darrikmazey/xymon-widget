@@ -42,6 +42,8 @@ XymonWidget::XymonWidget(QWidget *parent) :
 	qDebug() << QString("setting timer for %1 milliseconds").arg(secs * 1000);
 	m_timer->start(secs * 1000);
 	m_consecutiveTimeouts = 0;
+	m_updated = false;
+	m_lastUpdated = QDateTime::currentDateTime();
 	reload();
 }
 
@@ -183,7 +185,8 @@ void XymonWidget::haveReply(QNetworkReply *reply)
 		// error
 	}
 	#endif
-	m_lastMessage = QString("%1<br /><span style=\"font-size: 0.9em;\">Last updated: %2</span>").arg(m_lastMessage).arg(QDateTime::currentDateTime().toString());
+	m_lastUpdated = QDateTime::currentDateTime();
+	m_lastMessage = QString("%1<br /><span style=\"font-size: 0.9em;\">Last updated: %2</span>").arg(m_lastMessage).arg(m_lastUpdated.toString());
 }
 
 void XymonWidget::needsReconfigured()
