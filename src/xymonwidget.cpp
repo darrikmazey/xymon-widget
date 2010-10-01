@@ -211,6 +211,7 @@ int XymonWidget::pollIntervalTextToSeconds(const QString &txt)
 void XymonWidget::mouseReleaseEvent(QMouseEvent *event)
 {
 	if (m_currentColor == "black") {
+		QMaemo5InformationBox::information(this, QString("%1<br />Refreshing.").arg(m_lastMessage), QMaemo5InformationBox::DefaultTimeout);
 		reloadStatus();
 	} else if (m_currentColor != "green") {
 		QMaemo5InformationBox::information(this, m_lastMessage, QMaemo5InformationBox::DefaultTimeout);
