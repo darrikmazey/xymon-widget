@@ -42,8 +42,6 @@ XymonWidget::XymonWidget(QWidget *parent) :
 	qDebug() << QString("setting timer for %1 milliseconds").arg(secs * 1000);
 	m_timer->start(secs * 1000);
 	m_consecutiveTimeouts = 0;
-	m_updated = false;
-	m_lastUpdated = QDateTime::currentDateTime();
 	reload();
 }
 
@@ -111,6 +109,7 @@ void XymonWidget::reloadStatus()
 
 void XymonWidget::haveReply(QNetworkReply *reply)
 {
+	m_lastMessage = "";
 	qDebug() << QString("have reply!");
 	#ifndef DEBUG
 	if (reply->error() == 0) {
@@ -185,8 +184,20 @@ void XymonWidget::haveReply(QNetworkReply *reply)
 		// error
 	}
 	#endif
-	m_lastUpdated = QDateTime::currentDateTime();
-	m_lastMessage = QString("%1<br /><span style=\"font-size: 0.9em;\">Last updated: %2</span>").arg(m_lastMessage).arg(m_lastUpdated.toString());
+	m_lastMessage = QString("%1<br /><span style=\"font-size: 0.9em;\">Last updated: %2</span>").arg(m_lastMessage).arg(lastUpdated());
+}
+
+QString XymonWidget::lastUpdated()
+{
+	QSettings settings;
+	return(settings.value("last_updated", QString("never")).toString());
+}
+
+void XymonWidget::touchLastUpdated()
+{
+	QSettings settings;
+	settings.setValue("last_updated", QDateTime::currentDateTime().toString());
+	settings.sync();
 }
 
 void XymonWidget::needsReconfigured()
@@ -224,6 +235,8 @@ void XymonWidget::mouseReleaseEvent(QMouseEvent *event)
 			reloadStatus();
 		}
 	} else if (m_currentColor != "green") {
+		QMaemo5InformationBox::information(this, m_lastMessage, QMaemo5InformationBox::DefaultTimeout);
+	} else {
 		QMaemo5InformationBox::information(this, m_lastMessage, QMaemo5InformationBox::DefaultTimeout);
 	}
 }

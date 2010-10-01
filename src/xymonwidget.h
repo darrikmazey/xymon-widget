@@ -7,7 +7,6 @@
 #include <QNetworkReply>
 #include <QTimer>
 #include <QMouseEvent>
-#include <QDateTime>
 
 class XymonWidget : public QWidget
 {
@@ -27,6 +26,8 @@ class XymonWidget : public QWidget
 		void needsReconfigured();
 		int pollIntervalTextToSeconds(const QString &txt);
 		void mouseReleaseEvent(QMouseEvent *event);
+		void touchLastUpdated();
+		QString lastUpdated();
 
 		QString m_serverAddress;
 		QString m_nickname;
@@ -36,8 +37,6 @@ class XymonWidget : public QWidget
 		QString m_currentColor;
 		QString m_lastMessage;
 		int m_consecutiveTimeouts;
-		QDateTime m_lastUpdated;
-		bool m_updated;
 };
 
 #endif // DARMA_MAEMO_XYMON_WIDGET_H
