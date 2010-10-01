@@ -111,6 +111,7 @@ void XymonWidget::haveReply(QNetworkReply *reply)
 {
 	m_lastMessage = "";
 	qDebug() << QString("have reply!");
+	touchLastUpdated();
 	#ifndef DEBUG
 	if (reply->error() == 0) {
 	#endif
@@ -184,7 +185,7 @@ void XymonWidget::haveReply(QNetworkReply *reply)
 		// error
 	}
 	#endif
-	m_lastMessage = QString("%1<br /><span style=\"font-size: 0.9em;\">Last updated: %2</span>").arg(m_lastMessage).arg(lastUpdated());
+	m_lastMessage = QString("%1<br /><span style=\"font-size: 0.8em;\">Last updated: %2</span><br />").arg(m_lastMessage).arg(lastUpdated());
 }
 
 QString XymonWidget::lastUpdated()
