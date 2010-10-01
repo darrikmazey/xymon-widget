@@ -12,6 +12,7 @@
 #include <QUrl>
 #include <QMaemo5InformationBox>
 #include <QFile>
+#include <QDateTime>
 
 XymonWidget::XymonWidget(QWidget *parent) :
 	QWidget(parent)
@@ -182,6 +183,7 @@ void XymonWidget::haveReply(QNetworkReply *reply)
 		// error
 	}
 	#endif
+	m_lastMessage = QString("%1<br /><span style=\"font-size: 0.9em;\">Last updated: %2</span>").arg(m_lastMessage).arg(QDateTime::currentDateTime().toString());
 }
 
 void XymonWidget::needsReconfigured()
@@ -211,8 +213,13 @@ int XymonWidget::pollIntervalTextToSeconds(const QString &txt)
 void XymonWidget::mouseReleaseEvent(QMouseEvent *event)
 {
 	if (m_currentColor == "black") {
-		QMaemo5InformationBox::information(this, QString("%1<br />Refreshing.").arg(m_lastMessage), QMaemo5InformationBox::DefaultTimeout);
-		reloadStatus();
+		QSettings settings;
+		if (settings.value("needs_reconfigured").toBool()) {
+			QMaemo5InformationBox::information(this, m_lastMessage, QMaemo5InformationBox::DefaultTimeout);
+		} else {
+			QMaemo5InformationBox::information(this, QString("%1<br />Refreshing.").arg(m_lastMessage), QMaemo5InformationBox::DefaultTimeout);
+			reloadStatus();
+		}
 	} else if (m_currentColor != "green") {
 		QMaemo5InformationBox::information(this, m_lastMessage, QMaemo5InformationBox::DefaultTimeout);
 	}
