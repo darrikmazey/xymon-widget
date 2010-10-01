@@ -34,6 +34,7 @@ class XymonWidget : public QWidget
 		QTimer *m_timer;
 		QString m_currentColor;
 		QString m_lastMessage;
+		int m_consecutiveTimeouts;
 };
 
 #endif // DARMA_MAEMO_XYMON_WIDGET_H

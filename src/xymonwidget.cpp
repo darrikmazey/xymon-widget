@@ -40,6 +40,7 @@ XymonWidget::XymonWidget(QWidget *parent) :
 	int secs = pollIntervalTextToSeconds(txt);
 	qDebug() << QString("setting timer for %1 milliseconds").arg(secs * 1000);
 	m_timer->start(secs * 1000);
+	m_consecutiveTimeouts = 0;
 	reload();
 }
 
@@ -80,6 +81,7 @@ void XymonWidget::reloadStatus()
 	if (settings.value("needs_reconfigured").toBool()) {
 		qDebug() << QString("can not fetch until reconfigured");
 		m_colorLabel->setPixmap(QPixmap(QString("/opt/xymon-widget/images/xymon_black.png")));
+		m_currentColor = "black";
 		return;
 	}
 	QString server_address = settings.value("server_address").toString();
@@ -115,6 +117,8 @@ void XymonWidget::haveReply(QNetworkReply *reply)
 		if (status != 200) {
 			QMaemo5InformationBox::information(this, QString("Received status: %1").arg(status), QMaemo5InformationBox::DefaultTimeout);
 			m_colorLabel->setPixmap(QPixmap(QString("/opt/xymon-widget/images/xymon_black.png")));
+			m_currentColor = "black";
+
 		} else {
 			QByteArray data = reply->readAll();
 			QString data_string(data);
@@ -162,9 +166,19 @@ void XymonWidget::haveReply(QNetworkReply *reply)
 		}
 	} else {
 		int error_code = reply->error();
-		QMaemo5InformationBox::information(this, reply->errorString(), QMaemo5InformationBox::DefaultTimeout);
+		m_lastMessage = reply->errorString();
 		m_colorLabel->setPixmap(QPixmap(QString("/opt/xymon-widget/images/xymon_black.png")));
-		needsReconfigured();
+		m_currentColor = "black";
+		if (!(error_code == QNetworkReply::TimeoutError)) {
+			needsReconfigured();
+		} else {
+			m_consecutiveTimeouts += 1;
+			m_lastMessage = QString("Request timed out (%1 times)").arg(m_consecutiveTimeouts);
+		}
+		if (m_consecutiveTimeouts > 3) {
+			m_lastMessage = QString("Request timed out %1 times<br />Please check configuration.").arg(m_consecutiveTimeouts);
+			needsReconfigured();
+		}
 		// error
 	}
 	#endif
@@ -196,7 +210,9 @@ int XymonWidget::pollIntervalTextToSeconds(const QString &txt)
 
 void XymonWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-	if (m_currentColor != "green") {
+	if (m_currentColor == "black") {
+		reloadStatus();
+	} else if (m_currentColor != "green") {
 		QMaemo5InformationBox::information(this, m_lastMessage, QMaemo5InformationBox::DefaultTimeout);
 	}
 }
