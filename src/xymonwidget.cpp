@@ -65,6 +65,11 @@ void XymonWidget::showSettingsDialog()
 	m_timer->start(secs * 1000);
 }
 
+void XymonWidget::homeScreenChanged(bool active)
+{
+	qDebug() << QString("XymonWidget::homeScreenChanged(%1)").arg(active);
+}
+
 void XymonWidget::reload()
 {
 	QSettings settings;

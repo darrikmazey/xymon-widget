@@ -20,6 +20,7 @@ class XymonWidget : public QWidget
 		void showSettingsDialog();
 		void haveReply(QNetworkReply *reply);
 		void reloadStatus();
+		void homeScreenChanged(bool active);
 
 	protected:
 		void reload();
