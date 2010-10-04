@@ -28,18 +28,21 @@
 ** If you have questions regarding the use of this file, please contact
 ** Nokia at qt-info@nokia.com.
 **
-**
-**
-**
-**
-**
-**
-**
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
-#include <QtDebug>
+/****************************************************************************
+**
+** This file was modified by Darrik Mazey per the LGPL v2.1.
+**
+** Changes include:
+**  + fix applicationEventFilter() to properly emit homescreenChanged(bool)
+**		previously, this function always emitted homescreenChanged(false)
+**
+** Contact: Darrik Mazey (darrik@darmasoft.com)
+**
+****************************************************************************/
 
 #include "qmaemo5homescreenadaptor.h"
 
@@ -326,13 +329,6 @@ bool QMaemo5HomescreenAdaptor::applicationEventFilter(void *message, long *resul
         if (ev->xproperty.atom == hsAtoms[HildonAppletOnCurrentDesktop]) {
             for (int i = 0; i < allDesktopItems.count(); ++i) {
                 if (allDesktopItems.at(i)->appletWidget()->winId() == ev->xproperty.window) {
-									/*
-										qDebug() << QString("send_event: %1").arg(ev->xproperty.send_event);
-										qDebug() << QString("display: %1").arg((int) ev->xproperty.display);
-										qDebug() << QString("window: %1").arg(ev->xproperty.window);
-										qDebug() << QString("atom: %1").arg(ev->xproperty.atom);
-										qDebug() << QString("state: %1").arg(ev->xproperty.state);
-									*/
                     emit allDesktopItems.at(i)->homescreenChanged(ev->xproperty.state == 0);
                     retval = true;
                 }
