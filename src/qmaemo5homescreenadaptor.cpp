@@ -39,6 +39,8 @@
 **
 ****************************************************************************/
 
+#include <QtDebug>
+
 #include "qmaemo5homescreenadaptor.h"
 
 #include <QtCore/qsocketnotifier.h>
@@ -324,7 +326,14 @@ bool QMaemo5HomescreenAdaptor::applicationEventFilter(void *message, long *resul
         if (ev->xproperty.atom == hsAtoms[HildonAppletOnCurrentDesktop]) {
             for (int i = 0; i < allDesktopItems.count(); ++i) {
                 if (allDesktopItems.at(i)->appletWidget()->winId() == ev->xproperty.window) {
-                    emit allDesktopItems.at(i)->homescreenChanged(ev->xproperty.window == 0);
+									/*
+										qDebug() << QString("send_event: %1").arg(ev->xproperty.send_event);
+										qDebug() << QString("display: %1").arg((int) ev->xproperty.display);
+										qDebug() << QString("window: %1").arg(ev->xproperty.window);
+										qDebug() << QString("atom: %1").arg(ev->xproperty.atom);
+										qDebug() << QString("state: %1").arg(ev->xproperty.state);
+									*/
+                    emit allDesktopItems.at(i)->homescreenChanged(ev->xproperty.state == 0);
                     retval = true;
                 }
             }
