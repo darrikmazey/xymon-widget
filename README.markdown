@@ -1,6 +1,8 @@
 
 # Xymon-Widget
 
+Xymon-Widget is a desktop widget for the Nokia N900 (or any maemo device) that polls a xymon server and reports status via icon color and notification messages.
+
 ## Author
 
 Darrik Mazey (darrik@darmasoft.com)
