@@ -18,7 +18,7 @@ XymonWidget::XymonWidget(QWidget *parent) :
 	QWidget(parent)
 {
 	qDebug() << QString("XymonWidget::XymonWidget()");
-	m_ignoreScreenChanged = 0;
+	m_onScreen = false;
 	resize(144,178);
 	setMinimumSize(144,178);
 	setMaximumSize(144,178);
@@ -68,11 +68,18 @@ void XymonWidget::showSettingsDialog()
 
 void XymonWidget::homeScreenChanged(bool active)
 {
-	if (m_ignoreScreenChanged > 0) {
-		m_ignoreScreenChanged -= 1;
-		return;
-	}
 	qDebug() << QString("XymonWidget::homeScreenChanged(%1)").arg(active ? QString("true") : QString("false"));
+	if (m_onScreen != active) {
+		m_onScreen = active;
+		if (active) {
+			QSettings settings;
+			int secs = pollIntervalTextToSeconds(settings.value("poll_interval", QString("2 min")).toString());
+			reloadStatus();
+			m_timer->start(secs * 1000);
+		} else {
+			m_timer->stop();
+		}
+	}
 }
 
 void XymonWidget::reload()
@@ -256,6 +263,5 @@ void XymonWidget::mouseReleaseEvent(QMouseEvent *event)
 
 void XymonWidget::info(const QString &msg, int timeout)
 {
-	m_ignoreScreenChanged += 2;
 	QMaemo5InformationBox::information(this, msg, timeout);
 }

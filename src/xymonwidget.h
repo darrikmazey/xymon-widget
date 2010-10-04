@@ -40,7 +40,7 @@ class XymonWidget : public QWidget
 		QString m_currentColor;
 		QString m_lastMessage;
 		int m_consecutiveTimeouts;
-		int m_ignoreScreenChanged;
+		bool m_onScreen;
 };
 
 #endif // DARMA_MAEMO_XYMON_WIDGET_H
