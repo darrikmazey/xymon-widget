@@ -7,6 +7,7 @@
 #include <QNetworkReply>
 #include <QTimer>
 #include <QMouseEvent>
+#include <QMaemo5InformationBox>
 
 class XymonWidget : public QWidget
 {
@@ -29,6 +30,7 @@ class XymonWidget : public QWidget
 		void mouseReleaseEvent(QMouseEvent *event);
 		void touchLastUpdated();
 		QString lastUpdated();
+		void info(const QString &msg, int timeout = QMaemo5InformationBox::DefaultTimeout);
 
 		QString m_serverAddress;
 		QString m_nickname;
@@ -38,6 +40,7 @@ class XymonWidget : public QWidget
 		QString m_currentColor;
 		QString m_lastMessage;
 		int m_consecutiveTimeouts;
+		int m_ignoreScreenChanged;
 };
 
 #endif // DARMA_MAEMO_XYMON_WIDGET_H

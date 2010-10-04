@@ -18,6 +18,7 @@ XymonWidget::XymonWidget(QWidget *parent) :
 	QWidget(parent)
 {
 	qDebug() << QString("XymonWidget::XymonWidget()");
+	m_ignoreScreenChanged = 0;
 	resize(144,178);
 	setMinimumSize(144,178);
 	setMaximumSize(144,178);
@@ -67,7 +68,11 @@ void XymonWidget::showSettingsDialog()
 
 void XymonWidget::homeScreenChanged(bool active)
 {
-	qDebug() << QString("XymonWidget::homeScreenChanged(%1)").arg(active);
+	if (m_ignoreScreenChanged > 0) {
+		m_ignoreScreenChanged -= 1;
+		return;
+	}
+	qDebug() << QString("XymonWidget::homeScreenChanged(%1)").arg(active ? QString("true") : QString("false"));
 }
 
 void XymonWidget::reload()
@@ -123,7 +128,7 @@ void XymonWidget::haveReply(QNetworkReply *reply)
 		int status = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
 		#ifndef DEBUG
 		if (status != 200) {
-			QMaemo5InformationBox::information(this, QString("Received status: %1").arg(status), QMaemo5InformationBox::DefaultTimeout);
+			info(QString("Received status: %1").arg(status));
 			m_colorLabel->setPixmap(QPixmap(QString("/opt/xymon-widget/images/xymon_black.png")));
 			m_currentColor = "black";
 
@@ -239,14 +244,18 @@ void XymonWidget::mouseReleaseEvent(QMouseEvent *event)
 	if (m_currentColor == "black") {
 		QSettings settings;
 		if (settings.value("needs_reconfigured").toBool()) {
-			QMaemo5InformationBox::information(this, m_lastMessage, QMaemo5InformationBox::DefaultTimeout);
+			info(m_lastMessage);
 		} else {
-			QMaemo5InformationBox::information(this, QString("%1<br />Refreshing.").arg(m_lastMessage), QMaemo5InformationBox::DefaultTimeout);
+			info(QString("%1<br />Refreshing.").arg(m_lastMessage));
 			reloadStatus();
 		}
-	} else if (m_currentColor != "green") {
-		QMaemo5InformationBox::information(this, m_lastMessage, QMaemo5InformationBox::DefaultTimeout);
 	} else {
-		QMaemo5InformationBox::information(this, m_lastMessage, QMaemo5InformationBox::DefaultTimeout);
+		info(m_lastMessage);
 	}
+}
+
+void XymonWidget::info(const QString &msg, int timeout)
+{
+	m_ignoreScreenChanged += 2;
+	QMaemo5InformationBox::information(this, msg, timeout);
 }

@@ -22,7 +22,8 @@ int main(int argc, char **argv)
 
 	adaptor->setSettingsAvailable(true);
 	QObject::connect(adaptor, SIGNAL(settingsRequested()), w, SLOT(showSettingsDialog()));
-	QObject::connect(adaptor, SIGNAL(homeScreenChanged(bool)), w, SLOT(homeScreenChanged(bool)));
+	QObject::connect(adaptor, SIGNAL(homescreenChanged(bool)), w, SLOT(homeScreenChanged(bool)));
+
 
 	w->show();
 	
