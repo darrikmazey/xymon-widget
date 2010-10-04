@@ -24,3 +24,7 @@ Or use the following settings in the application manager:
 	* Distribution: fremantle-1.2
 	* Components: free
 
+## Links
+
+* [Xymon](http://www.xymon.com/)
+* [Qt](http://qt.nokia.com/products/)
