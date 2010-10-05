@@ -24,6 +24,14 @@ Or use the following settings in the application manager:
 	* Distribution: fremantle-1.2
 	* Components: free
 
+## Configuration
+
+In the settings, Server Address can be a hostname (e.g. xymon.darmasoft.com) or a hostname with protocol (e.g. https://xymon.darmasoft.com).  SSL functions, but invalid certificates are ignored without warning.
+
+## Current Version
+
+* 0.28
+
 ## Links
 
 * [Xymon](http://www.xymon.com/)
