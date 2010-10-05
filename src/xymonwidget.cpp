@@ -35,6 +35,7 @@
 #include <QMaemo5InformationBox>
 #include <QFile>
 #include <QDateTime>
+#include <QSslConfiguration>
 
 XymonWidget::XymonWidget(QWidget *parent) :
 	QWidget(parent)
@@ -144,6 +145,12 @@ void XymonWidget::reloadStatus()
 		QByteArray b64auth = text.toBase64();
 		req.setRawHeader(QByteArray("Authorization"), QByteArray().append(QString("Basic %1").arg(QString(b64auth))));
 	}
+
+	// query ssl cert but don't require valid cert
+	QSslConfiguration sslconfig = req.sslConfiguration();
+	sslconfig.setPeerVerifyMode(QSslSocket::QueryPeer);
+	req.setSslConfiguration(sslconfig);
+
 	man->get(req);
 }
 
