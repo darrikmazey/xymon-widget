@@ -162,6 +162,7 @@ void XymonWidget::haveReply(QNetworkReply *reply)
 			m_currentColor = "black";
 
 		} else {
+			m_consecutiveTimeouts = 0;
 			QByteArray data = reply->readAll();
 			QString data_string(data);
 		#else
@@ -216,9 +217,9 @@ void XymonWidget::haveReply(QNetworkReply *reply)
 		m_colorLabel->setPixmap(QPixmap(QString("/opt/xymon-widget/images/xymon_black.png")));
 		m_currentColor = "black";
 		m_consecutiveTimeouts += 1;
-		m_lastMessage = QString("%1<br />Request errored %2 times)").arg(m_lastMessage).arg(m_consecutiveTimeouts);
+		m_lastMessage = QString("%1<br />Request errored %2 times.").arg(m_lastMessage).arg(m_consecutiveTimeouts);
 		if (m_consecutiveTimeouts > 3) {
-			m_lastMessage = QString("%1<br />Request errored %2 times<br />Please check configuration.").arg(m_lastMessage).arg(m_consecutiveTimeouts);
+			m_lastMessage = QString("%1<br />Please check configuration.").arg(m_lastMessage).arg(m_consecutiveTimeouts);
 			needsReconfigured();
 		}
 		// error
