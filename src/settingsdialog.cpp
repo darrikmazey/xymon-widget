@@ -105,6 +105,17 @@ void SettingsDialog::createControls()
 	m_btnPoll->setValueText(settings.value("poll_interval", QString("2 min")).toString());
 	line5->addWidget(m_btnPoll);
 	col1->addLayout(line5);
+
+	QHBoxLayout *line6 = new QHBoxLayout();
+	m_cbManualDismiss = new QCheckBox("Manually Dismiss Messages");
+	if (settings.value("manual_dismiss", false).toBool()) {
+		m_cbManualDismiss->setCheckState(Qt::Checked);
+	} else {
+		m_cbManualDismiss->setCheckState(Qt::Unchecked);
+	}
+	line6->addWidget(m_cbManualDismiss);
+	col1->addLayout(line6);
+
 	col1->addLayout(line3);
 	col1->addLayout(line4);
 
@@ -138,6 +149,7 @@ void SettingsDialog::save()
 	settings.setValue("first_time_configured", true);
 	settings.setValue("needs_reconfigured", false);
 	settings.setValue("poll_interval", m_btnPoll->valueText());
+	settings.setValue("manual_dismiss", m_cbManualDismiss->checkState() == Qt::Checked);
 	settings.sync();
 	emit accept();
 }

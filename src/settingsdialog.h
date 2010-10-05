@@ -27,6 +27,7 @@
 #include <QDialog>
 
 #include <QLineEdit>
+#include <QCheckBox>
 #include <QMaemo5ValueButton>
 
 class SettingsDialog : public QDialog
@@ -47,6 +48,7 @@ class SettingsDialog : public QDialog
 		QLineEdit *m_leServerAddress;
 		QLineEdit *m_leUsername;
 		QLineEdit *m_lePassword;
+		QCheckBox *m_cbManualDismiss;
 		QMaemo5ValueButton *m_btnPoll;
 };
 

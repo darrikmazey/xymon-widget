@@ -79,6 +79,7 @@ void XymonWidget::showSettingsDialog()
 	m_timer->stop();
 	int ret = SettingsDialog().exec();
 	if (ret == 1) {
+		m_consecutiveTimeouts = 0;
 		reload();
 	}
 	QSettings settings;
@@ -282,5 +283,10 @@ void XymonWidget::mouseReleaseEvent(QMouseEvent *event)
 
 void XymonWidget::info(const QString &msg, int timeout)
 {
-	QMaemo5InformationBox::information(this, msg, timeout);
+	QSettings settings;
+	if (settings.value("manual_dismiss", false).toBool()) {
+		QMaemo5InformationBox::information(this, msg, QMaemo5InformationBox::NoTimeout);
+	} else {
+		QMaemo5InformationBox::information(this, msg, timeout);
+	}
 }
