@@ -215,14 +215,10 @@ void XymonWidget::haveReply(QNetworkReply *reply)
 		m_lastMessage = reply->errorString();
 		m_colorLabel->setPixmap(QPixmap(QString("/opt/xymon-widget/images/xymon_black.png")));
 		m_currentColor = "black";
-		if (!(error_code == QNetworkReply::TimeoutError)) {
-			needsReconfigured();
-		} else {
-			m_consecutiveTimeouts += 1;
-			m_lastMessage = QString("Request timed out (%1 times)").arg(m_consecutiveTimeouts);
-		}
+		m_consecutiveTimeouts += 1;
+		m_lastMessage = QString("%1<br />Request errored %2 times)").arg(m_lastMessage).arg(m_consecutiveTimeouts);
 		if (m_consecutiveTimeouts > 3) {
-			m_lastMessage = QString("Request timed out %1 times<br />Please check configuration.").arg(m_consecutiveTimeouts);
+			m_lastMessage = QString("%1<br />Request errored %2 times<br />Please check configuration.").arg(m_lastMessage).arg(m_consecutiveTimeouts);
 			needsReconfigured();
 		}
 		// error
